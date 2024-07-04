@@ -51,7 +51,7 @@ pipeline {
                               "files": [
                                 {
                                   "pattern": "target/springbootApp.jar",
-                                  "target": "ncpl-libs-release",
+                                  "target": "springboot-libs-release",
                                   "flat": "false",
                                   "props" : "${properties}",
                                   "exclusions": [ "*.sha1", "*.md5"]
@@ -65,29 +65,6 @@ pipeline {
                 
                 }
             }   
-        } 
-    stage ('Build Docker Image'){
-      steps {
-        script {
-            sh 'docker build -t ecrncplrepo01 .'
-        }
-      }
-    }  
-    stage ('Push Docker Image') {
-        steps {
-            script {
-                sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 590183872964.dkr.ecr.us-east-1.amazonaws.com'
-                sh 'docker tag ecrncplrepo01:latest 590183872964.dkr.ecr.us-east-1.amazonaws.com/ecrncplrepo01:latest'
-                sh 'docker push 590183872964.dkr.ecr.us-east-1.amazonaws.com/ecrncplrepo01:latest'
-            }
-        }
-    }
-    stage ('Deploy to Kubernetes'){
-      steps {
-        script {
-            sh 'kubectl apply -f eks-deploy-k8s.yaml'
-        }
-      }
-    }  
+        }     
     }
 }
