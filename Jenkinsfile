@@ -1,16 +1,16 @@
-def registry  ='https://varedla.jfrog.io/'
+def registry  ='https://sourcecodexxx.jfrog.io/'
 pipeline {
     tools {
         maven "Maven3"
     }
     agent any
     environment {
-        SCANNER_HOME= tool 'sonar-scanner'
+        SCANNER_HOME= tool 'SonarQube_Scanner'
     }
     stages {
         stage('Checkout From Git') {
             steps {
-                git branch: 'main', url: 'https://github.com/bkrrajmali/springbootapp.git'
+                git branch: 'main', url: 'https://github.com/SourceCodeXX/springbootapp.git'
             }
         }
         stage('Maven Build') {
@@ -28,8 +28,8 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                script {
-                withSonarQubeEnv('sonar-server') {
-                sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=springbootapp -Dsonar.projectKey=bkrrajmali_springbootapp '''
+                withSonarQubeEnv('SonarQube_Server') {
+                sh ''' $SCANNER_HOME/bin/SonarQube_Scanner -Dsonar.projectName=springbootapp -Dsonar.projectKey=SourceCodeXX_springbootapp '''
                 }
                }
             }
@@ -45,7 +45,7 @@ pipeline {
             steps {
                 script {
                         echo '<--------------- Jar Publish Started --------------->'
-                         def server = Artifactory.newServer url:registry+"/artifactory" ,  credentialsId:"jfrogaccess"
+                         def server = Artifactory.newServer url:registry+"/artifactory" ,  credentialsId:"Jfrog"
                          def properties = "buildid=${env.BUILD_ID},commitid=${GIT_COMMIT}";
                          def uploadSpec = """{
                               "files": [
@@ -69,16 +69,16 @@ pipeline {
     stage ('Build Docker Image'){
       steps {
         script {
-            sh 'docker build -t myrepo .'
+            sh 'docker build -t ecrncplrepo01 .'
         }
       }
     }  
     stage ('Push Docker Image') {
         steps {
             script {
-                sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 656952365822.dkr.ecr.us-east-1.amazonaws.com'
-                sh 'docker tag myrepo:latest 656952365822.dkr.ecr.us-east-1.amazonaws.com/ncplrepo:latest'
-                sh 'docker push 656952365822.dkr.ecr.us-east-1.amazonaws.com/ncplrepo:latest'
+                sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 590183872964.dkr.ecr.us-east-1.amazonaws.com'
+                sh 'docker tag ecrncplrepo01:latest 590183872964.dkr.ecr.us-east-1.amazonaws.com/ecrncplrepo01:latest'
+                sh 'docker push 590183872964.dkr.ecr.us-east-1.amazonaws.com/ecrncplrepo01:latest'
             }
         }
     }
