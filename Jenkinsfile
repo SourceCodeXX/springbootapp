@@ -5,7 +5,7 @@ pipeline {
     }
     agent any
     environment {
-        SCANNER_HOME= tool 'SonarQube_Scanner'
+        SCANNER_HOME= tool 'sonar-scanner'
     }
     stages {
         stage('Checkout From Git') {
@@ -29,7 +29,7 @@ pipeline {
             steps {
                script {
                 withSonarQubeEnv('SonarQube_Server') {
-                sh ''' $SCANNER_HOME/bin/SonarQube_Scanner -Dsonar.projectName=springbootapp -Dsonar.projectKey=SourceCodeXX_springbootapp '''
+                sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=springbootapp -Dsonar.projectKey=SourceCodeXX_springbootapp '''
                 }
                }
             }
